@@ -1,8 +1,8 @@
-from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor, ColorSensor
-from pybricks.parameters import Button, Color, Direction, Port, Side, Stop, Axis
-from pybricks.robotics import DriveBase
-from pybricks.tools import wait, StopWatch
+from pybricks.hubs import PrimeHub # type: ignore
+from pybricks.pupdevices import Motor, ColorSensor # type: ignore
+from pybricks.parameters import Button, Color, Direction, Port, Side, Stop, Axis # type: ignore
+from pybricks.robotics import DriveBase # type: ignore
+from pybricks.tools import wait, StopWatch # type: ignore
 from util import Robot, LaunchSettings, gyroStraightRotations, gyroSpin, gyroStraightTime, gyroPivot, resetGyro, waitForStart, alignToStructure, archivePivot, archiveSpin, gyroSpinFS
 
 

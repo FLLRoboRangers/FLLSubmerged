@@ -1,9 +1,9 @@
-from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor, ColorSensor
-from pybricks.parameters import Button, Color, Direction, Port, Side, Stop, Axis
-from pybricks.robotics import DriveBase
-from pybricks.tools import wait, StopWatch
-from pybricks.tools import multitask, run_task
+from pybricks.hubs import PrimeHub # type: ignore
+from pybricks.pupdevices import Motor, ColorSensor # type: ignore
+from pybricks.parameters import Button, Color, Direction, Port, Side, Stop, Axis # type: ignore
+from pybricks.robotics import DriveBase # type: ignore
+from pybricks.tools import wait, StopWatch # type: ignore
+from pybricks.tools import multitask, run_task # type: ignore
 from exits import *
 from util import Robot
 
@@ -93,7 +93,7 @@ def programSelect(programIndex):
             leftButtonPressed = False
 
         if (Button.CENTER not in hub.buttons.pressed()) and middleButtonPressed == True:
-            selectingProgram = False;
+            selectingProgram = False
             middleButtonPressed = False
     
     print('Selected program: ' + str(programIndex))
