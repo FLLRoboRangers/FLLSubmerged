@@ -209,8 +209,20 @@ async def sampleExit6(robot: Robot):
 
     await resetGyro(robot)
     await waitForStart(robot)
+    robot.leftAttachment.reset_angle(0)
+    robot.rightAttachment.reset_angle(0)
 
-    await gyroStraightRotations(robot, launch5StraightSetings, 10, 0, 100)
+    await gyroStraightRotations(robot, launch5StraightSetings, 5.6, 90, 50)
+    await gyroPivot(robot , front , 0)
+    await gyroStraightRotations(robot, launch5StraightSetings, 2.4, 0, 50)
+    await gyroPivot(robot , front , -45)
+    await gyroStraightTime(robot, launch5StraightSetings, 1, -45, 50)
+    
+    await robot.rightAttachment.run_time(-1000 , 2000)
+    await wait(2000)
+    await gyroPivot(robot , back , 0)
+    await gyroStraightRotations(robot, launch5StraightSetings, 0.7, 0, -50)
+
 
 async def leftMotorControl(robot: Robot):
     while True:
