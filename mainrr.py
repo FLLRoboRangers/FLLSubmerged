@@ -26,7 +26,7 @@ robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, drive
 exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6, leftMotorControl, rightMotorControl]
 
 async def main():
-    selectedProgram = programSelect(1);
+    selectedProgram = programSelect(1)
     while True:
         robot.hub.light.on(Color.VIOLET)
 

@@ -34,7 +34,7 @@ async def exit1(robot: Robot):
     
     await gyroPivot(robot, back, -5)
     await gyroStraightRotations(robot, launch1StraightSettings, 0.5, -8, 50)
-    await gyroSpinFS(robot, 89)
+    await gyroSpin(robot, 89)
     await gyroStraightTime(robot, launch1StraightSettings, 2.4, 89, -30)
     doAlign = await alignToStructure(robot, launch1StraightSettings, back, 90, 2)
     if doAlign == 0:
@@ -76,8 +76,8 @@ async def exit2(robot: Robot):
     await gyroStraightRotations(robot, launch2StraightSettings, 0.2, 42, -23)
     await robot.rightAttachment.run_angle(200, 170)
 
-    robot.rightAttachment.run_time(180, 3200, wait=False)
-    await gyroStraightTime(robot, launch2StraightSettings, 1, 42, 18)
+    robot.rightAttachment.run_time(180, 3600, wait=False)
+    await gyroStraightTime(robot, launch2StraightSettings, 0.7, 41, 18)
     await wait(2000)
 
     robot.rightAttachment.run_time(-170, 3500, wait=False)
