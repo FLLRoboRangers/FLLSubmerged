@@ -3,8 +3,11 @@ This is the fll codebase that can be used with vs code.
 ## Instructions:
 
 **To use the code with vscode you need to:**
+
 1 Install Python
+
 2 Install PyBricsDev library with the command:
+
     pip install pybricks
     
     then
