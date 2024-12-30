@@ -1,19 +1,32 @@
-This is the fll codebase that can be used with vs code.
 
-## Instructions:
+# FLL Codebase for VS Code Integration
 
-**To use the code with vscode you need to:**
+## Prerequisites
 
-1 Install Python
+Before using this codebase, ensure you have Python on your computer
 
-2 Install PyBricsDev library with the command:
+## Installation
 
-    pip install pybricks
-    
-then
+Follow these steps to set up the environment:
 
-    pip install pybricksdev
+1. Install the **PyBricks** library:
+   ```bash
+   pip install pybricks
+   ```
 
+2. Install the **PyBricksDev** library:
+   ```bash
+   pip install pybricksdev
+   ```
 
-You can now run an opened Python program with F5 or 
-go to run and debug tab and press run while editing the mainrr.py
+## Running the Program
+
+You can run the Python program in VS Code in one of the following ways:
+
+### Option 1: Using the Shortcut
+- Open the `mainrr.py` file in VS Code.
+- Press `F5` to execute the script.
+
+### Option 2: Using the Run and Debug Tab
+- Navigate to the **Run and Debug** tab in VS Code.
+- Click on **Run** while editing the `mainrr.py` file.
