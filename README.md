@@ -10,7 +10,7 @@ This is the fll codebase that can be used with vs code.
 
     pip install pybricks
     
-    then
+then
 
     pip install pybricksdev
 
