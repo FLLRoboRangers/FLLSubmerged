@@ -21,12 +21,12 @@ driveBase = DriveBase(leftDrive, rightDrive, 62.4, 81.4)
 colorLeft = ColorSensor(Port.B)
 colorRight = ColorSensor(Port.F)
 
-robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, driveBase, colorLeft, colorRight)                    
+robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, driveBase, colorLeft, colorRight)
 
-exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6, leftMotorControl, rightMotorControl]
+exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, leftMotorControl, rightMotorControl]
 
 async def main():
-    selectedProgram = programSelect(1)
+    selectedProgram = programSelect(1);
     while True:
         robot.hub.light.on(Color.VIOLET)
 
@@ -58,7 +58,7 @@ async def programQuit():
             clicked = True
         
         await wait(10)
-
+                                                                                                                                                                                                                                                    
     return 1
 
 def programSelect(programIndex):
@@ -100,5 +100,5 @@ def programSelect(programIndex):
 
     return programIndex
 
-hub.speaker.beep() 
+hub.speaker.beep()
 run_task(main())
