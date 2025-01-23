@@ -186,7 +186,7 @@ async def sampleExit4(robot: Robot):
 
 
 
-    await gyroStraightTime(robot, launch4StraightSettings, 1.5, 0, 70)
+    await gyroStraightTime(robot, launch4StraightSettings, 1.5, 0, 60)
     await robot.leftAttachment.run_time(-800, 1500)
     await gyroStraightRotations(robot, launch4StraightSettings, 1.6, 0, -40)
     await robot.rightAttachment.run_time(1000, 650)
