@@ -23,37 +23,39 @@ async def exit1(robot: Robot):
     exitTimer = StopWatch()
    
     
-    robot.rightAttachment.run_angle(1000 , 900, wait = False)
-    robot.leftAttachment.run_time(-100 , 500 , wait = False)
-    await gyroPivot(robot, front, 50)
-    await gyroStraightRotations(robot, launch1StraightSettings, 1.1, 50, 65)
+    robot.leftAttachment.run_angle(1000 , 900, wait = False)
+    robot.rightAttachment.run_time(100 , 200 , wait = False)
+    await gyroPivot(robot, front, 45)
+    await gyroStraightRotations(robot, launch1StraightSettings, 1.3, 45, 80)
+    await gyroPivot(robot, front, 30)
+    await gyroStraightRotations(robot, launch1StraightSettings, 0.5, 30, 70)
     await gyroPivot(robot, front, 25)
-    await gyroStraightRotations(robot, launch1StraightSettings, 0.65, 23, 65)
-    await gyroStraightRotations(robot, launch1StraightSettings, 0.7, 20, 50)
-    await robot.rightAttachment.run_time(-1000, 1550)
+    await gyroStraightRotations(robot, launch1StraightSettings, 0.2, 25, 40)
+    await robot.leftAttachment.run_time(-1000, 1550)
+    await gyroPivot(robot, front, 0)
     
-    await gyroPivot(robot, back, -5)
-    await gyroStraightRotations(robot, launch1StraightSettings, 0.5, -8, 50)
-    await gyroSpin(robot, 89)
-    await gyroStraightTime(robot, launch1StraightSettings, 2.4, 89, -30)
+    await gyroStraightRotations(robot, launch1StraightSettings, 0.5, 0, 50)
+    # await gyroPivot(robot, front, 90)
+    await gyroSpin(robot, 92)
+    await gyroStraightTime(robot, launch1StraightSettings, 2.4, 92, -30)
     doAlign = await alignToStructure(robot, launch1StraightSettings, back, 90, 2)
     if doAlign == 0:
         await gyroStraightTime(robot, launch1StraightSettings, 0.5, 90, -60)
-    await robot.leftAttachment.run_time(170 , 3000)
-    robot.leftAttachment.run_time(170 , 2000 , wait = False)
-    await gyroStraightTime(robot, launch1StraightSettings, 1, 88, 40)
-    robot.leftAttachment.run_angle(-100, 140, wait = False)
+    await robot.rightAttachment.run_time(-500 , 750)
+    await robot.rightAttachment.run_time(200 , 400)
+    await gyroStraightTime(robot, launch1StraightSettings, 0.1, 90, 40)
+    await robot.rightAttachment.run_time(400 , 500)
+    await gyroStraightTime(robot, launch1StraightSettings, 1, 89, 40)
     await wait(300)
 
     #corabie
-    await gyroStraightTime(robot, launch1StraightSettings, 2.2, 87, 40)
+    await gyroStraightTime(robot, launch1StraightSettings, 2.2, 89, 40)
     await gyroStraightTime(robot, launch1StraightSettings, 1.5, 90, -30)
     
-    await gyroPivot(robot, back, 30)
+    await gyroPivot(robot, back, 40)
     await gyroStraightTime(robot, launch1StraightSettings, 2, 40, -100)
 
     return exitTimer.time()
-
 
 
 async def exit2(robot: Robot):
@@ -78,9 +80,14 @@ async def exit2(robot: Robot):
     await gyroStraightRotations(robot, launch2StraightSettings, 0.2, 42, -23)
     await robot.rightAttachment.run_angle(200, 170)
 
-    robot.rightAttachment.run_time(180, 3200, wait=False)
-    await gyroStraightTime(robot, launch2StraightSettings, 1, 42, 18)
-    await wait(2000)
+    # robot.rightAttachment.run_time(180, 3200, wait=False)
+    robot.rightAttachment.run_time(180, 500, wait=False)
+    await gyroStraightTime(robot, launch2StraightSettings, 0.4, 42, 20)
+    await wait(100)
+    robot.rightAttachment.dc(100)
+    await gyroStraightTime(robot, launch2StraightSettings, 1, 42, 30)
+    robot.rightAttachment.stop()
+
 
     robot.rightAttachment.run_time(-170, 3500, wait=False)
     await wait(300)
@@ -125,10 +132,11 @@ async def sampleExit3(robot: Robot):
 
     robot.leftAttachment.run_time(-200,1000 , wait=False)
     await gyroSpin(robot, 34)
-    await gyroStraightRotations(robot, launch3StraightSettings, 3.5, 34, 50)
-    await gyroPivot(robot , front , 0)
+    await gyroStraightRotations(robot, launch3StraightSettings, 3.5, 34, 60)
+    await gyroPivot(robot, front, 0)
     await gyroStraightTime(robot, launch3StraightSettings, 3, 0, 30)
-    await robot.leftAttachment.run_time(1000, 700)
+    robot.leftAttachment.run_time(1000, 700, wait=False)
+    await gyroStraightTime(robot, launch3StraightSettings, 1, 0, 70)
     await wait(500)
     
     await robot.leftAttachment.run_time(-100, 500)
@@ -177,7 +185,7 @@ async def sampleExit4(robot: Robot):
 
 
     
-    robot.leftAttachment.run_time(800, 1500, wait=False)
+    robot.leftAttachment.run_time(-800, 1300, wait=False)
 
     await gyroStraightRotations(robot, launch4StraightSettings, 3.8, 0, 50)
     await gyroSpin(robot, -25)
@@ -187,7 +195,7 @@ async def sampleExit4(robot: Robot):
 
 
     await gyroStraightTime(robot, launch4StraightSettings, 1.5, 0, 60)
-    await robot.leftAttachment.run_time(-800, 1500)
+    await robot.leftAttachment.run_time(500, 1700)
     await gyroStraightRotations(robot, launch4StraightSettings, 1.6, 0, -40)
     await robot.rightAttachment.run_time(1000, 650)
     await gyroSpin(robot, 45)
