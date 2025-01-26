@@ -224,24 +224,25 @@ async def sampleExit5(robot: Robot): #iesire david, pls nu stergeti iar
     robot.rightAttachment.dc(-100)
     await wait(300)
     robot.rightAttachment.dc(0)
-    await gyroStraightRotations(robot, launch5StraightSetings, 0.4, 0, 30)
-    await gyroStraightRotations(robot, launch5StraightSetings, 2, 0, 100)
+    await gyroSpin(robot, 15)
+    await gyroStraightRotations(robot, launch5StraightSetings, 0.4, 15, 30)
+    await gyroStraightRotations(robot, launch5StraightSetings, 2, -20, 100)
 
     await waitForStart(robot)
 
-    await gyroStraightRotations(robot, launch5StraightSetings, 3, -45, 70)
+    await gyroStraightRotations(robot, launch5StraightSetings, 2.8, -45, 100)
     await wait(100)
-    await gyroStraightRotations(robot, launch5StraightSetings, 1.2, -45, -70)
+    await gyroStraightRotations(robot, launch5StraightSetings, 1.2, -45, -100)
 
     await resetGyro(robot)
     await waitForStart(robot)
 
-    await gyroSpin(robot, 0)
+
     await gyroStraightRotations(robot, launch5StraightSetings, 0.7, 0, 50)
     robot.leftAttachment.dc(100)
     await wait(300)
     robot.leftAttachment.dc(0)
-    await gyroStraightRotations(robot, launch5StraightSetings, 4, 0, 60)
+    await gyroStraightRotations(robot, launch5StraightSetings, 4, 0, 50)
     await gyroStraightRotations(robot, launch5StraightSetings, 2, -40, 100)
 
     # await gyroStraightRotations(robot, launch5StraightSetings, 1.3, 0, -70)
