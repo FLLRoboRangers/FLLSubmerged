@@ -202,7 +202,7 @@ async def sampleExit4(robot: Robot):
     await gyroSpin(robot, 45)
     await gyroStraightRotations(robot, launch4StraightSettings, 2, 45, 70)
     await gyroStraightTime(robot, launch4StraightSettings, 1, 45, 70)
-    await wait(1000)
+    await wait(500)
     await gyroStraightRotations(robot, launch4StraightSettings, 1, 45, -70)
     await gyroSpin(robot, 0)
     await gyroStraightRotations(robot, launch4StraightSettings, 1.5, 0, -100)
