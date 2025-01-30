@@ -218,14 +218,11 @@ async def sampleExit5(robot: Robot):
 
     await waitForStart(robot)
     launch8StraightSetings = LaunchSettings(kp = 4, ki = 0, kd = 0.09)
-    exitTimer = StopWatch()
 
     robot.hub.imu.reset_heading(0)
     await gyroStraightTime(robot, launch8StraightSetings , 1 , 0 , 20)
     await wait(100)
     await gyroStraightTime(robot, launch8StraightSetings , 0.5 , 0 , -100)
-    return exitTimer.time()
-
     return exitTimer.time()
 
 async def sampleExit6(robot: Robot):
@@ -299,7 +296,7 @@ async def sampleExit8(robot: Robot):
     await gyroStraightRotations(robot, launch8StraightSetings , 0.8 , 90 , -70)
     
     return exitTimer.time()
-    await play_song(robot, 100)
+    # await play_song(robot, 100)
 
 async def leftMotorControl(robot: Robot):
     while True:
