@@ -23,10 +23,11 @@ colorRight = ColorSensor(Port.F)
 
 robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, driveBase, colorLeft, colorRight)
 
-exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, leftMotorControl, rightMotorControl]
+exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, sampleExit8, leftMotorControl, rightMotorControl]
 
 async def main():
-    selectedProgram = programSelect(1);
+    selectedProgram = programSelect(1)
+    exitcontinue = False
     while True:
         robot.hub.light.on(Color.VIOLET)
 
@@ -41,14 +42,19 @@ async def main():
             if (selectedProgram < len(exits)):
                 selectedProgram += 1
             print(f'Exit has finished in {returnValues[1] / 1000} seconds')
+            selectedProgram = programSelect(selectedProgram, False)
+            exitcontinue = True
         else:
             print('Exit was interrupted')
-        
-        selectedProgram = programSelect(selectedProgram)
+            exitcontinue = False
+
+
+        if(exitcontinue ==  False):
+            selectedProgram = programSelect(selectedProgram)
 
 async def programQuit():
     middleButtonPressed = False
-    clicked = False;
+    clicked = False
 
     while clicked == False:
         if Button.CENTER in hub.buttons.pressed():
@@ -61,12 +67,11 @@ async def programQuit():
                                                                                                                                                                                                                                                     
     return 1
 
-def programSelect(programIndex):
+def programSelect(programIndex, selectingProgram = True):
     robot.hub.light.blink(Color.BLUE, [250, 250])
     rightButtonPressed = False
-    middleButtonPressed = False
     leftButtonPressed = False
-    selectingProgram = True;
+    middleButtonPressed = False
     hub.display.number(programIndex)
     while selectingProgram:
         if Button.RIGHT in hub.buttons.pressed():

@@ -238,6 +238,61 @@ async def gyroPivot(robot: Robot, direction: float, targetHeading:float, maxSpee
     finalError = abs(robot.hub.imu.heading() - targetHeading)
     print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
 
+async def gyroPivotFS(robot: Robot, direction: float, targetHeading: float, maxSpeed: float = 2400, minSpeed: float = 70, timeout_ms: float = 3000):
+    turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
+    turnRot = turnDegrees / 360
+
+    safetyWatch = StopWatch()
+    timed_out = False 
+
+    if (robot.hub.imu.heading() < targetHeading):
+        while robot.hub.imu.heading() < targetHeading:
+            currentSpeed = maxSpeed * abs(robot.hub.imu.heading() - targetHeading) / turnDegrees * turnRot
+            currentSpeed = max(currentSpeed, minSpeed)
+            
+            if direction == 0:
+                robot.leftDrive.run(currentSpeed)
+                robot.rightDrive.run(0)
+            else:
+                robot.leftDrive.run(0)
+                robot.rightDrive.run(-currentSpeed)
+            
+            await wait(10)
+            
+            if safetyWatch.time() > timeout_ms:
+                timed_out = True
+                break
+    else:
+        while robot.hub.imu.heading() > targetHeading:
+            currentSpeed = maxSpeed * abs(robot.hub.imu.heading() - targetHeading) / turnDegrees * turnRot
+            currentSpeed = max(currentSpeed, minSpeed)
+            
+            if direction == 0:
+                robot.leftDrive.run(0)
+                robot.rightDrive.run(currentSpeed)
+            else:
+                robot.leftDrive.run(-currentSpeed)
+                robot.rightDrive.run(0)
+            
+            await wait(10)
+            
+            if safetyWatch.time() > timeout_ms:
+                timed_out = True
+                break
+
+    robot.leftDrive.hold()
+    robot.rightDrive.hold()
+
+    finalError = abs(robot.hub.imu.heading() - targetHeading)
+    if timed_out:
+        print(f"Gyro pivot TIMED OUT after {safetyWatch.time()}ms with {finalError} degrees error")
+        return True
+    else:
+        print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
+        return False
+
+
+
 async def gyroSpin(robot: Robot, targetHeading: float, maxSpeed: float = 1200, minSpeed: float = 35):
     turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
     turnRot = turnDegrees / 360
@@ -459,3 +514,30 @@ async def gyroSpinFS(robot: Robot, targetHeading: float, maxSpeed: float = 1200,
 
     robot.leftDrive.hold()
     robot.rightDrive.hold()
+
+
+async def play_song(robot: Robot, volume: int = 40):
+    robot.hub.speaker.volume(volume)
+    crab_rave_notes = [
+        "D6/8",
+        "Bb5/8", 
+        "G5/8", 
+        "G5/16",
+        "D6/8", 
+        "D6/16", 
+        "A5/8",
+        "F5/8",
+        "F5/8",
+        "D6/8", 
+        "D6/16", 
+        "A5/8",
+        "F5/8",
+        "F5/16",
+        "C5/8",
+        "C5/8",
+        "E5/8",
+        "E5/16",
+        "F5/16",
+    ]
+    while(True):
+        robot.hub.speaker.play_notes(crab_rave_notes, 125)
