@@ -323,13 +323,13 @@ async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, directi
     robot.leftDrive.hold()
     robot.rightDrive.hold()
 '''
-async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float):
+async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1):
     lockGate = False
 
     stopWatch = StopWatch()
     safetyWatch = StopWatch()
-    
-    targetTolerance = launchSettings.turnTolerance
+
+    targetTolerance = turnTolerance
 
     kp = launchSettings.kp
     ki = launchSettings.ki
@@ -373,14 +373,14 @@ async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: 
     robot.leftDrive.hold()
     robot.rightDrive.hold()
 
-async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float):
+async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, turnTolerance: float = 1):
 
     lockGate = False
 
     stopWatch = StopWatch()
     safetyWatch = StopWatch()
 
-    targetTolerance = launchSettings.turnTolerance
+    targetTolerance = turnTolerance
 
     kp = launchSettings.kp * 2
     ki = launchSettings.ki * 2
