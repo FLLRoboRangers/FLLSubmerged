@@ -61,8 +61,8 @@ class LaunchSettings:
         self.turnTolerance = turnTolerance
 
 async def gyroStraightRotations(robot: Robot, launchSettings: LaunchSettings, rotations: float, targetHeading: float = 0, targetPower: float = 60, accelDist: float = 0, deaccelDist: float = 0, targetTolerance:float = 0):
-    robot.leftDrive.reset_angle(0);
-    robot.rightDrive.reset_angle(0);
+    robot.leftDrive.reset_angle(0)
+    robot.rightDrive.reset_angle(0)
 
     kp = launchSettings.kp
     ki = launchSettings.ki
@@ -93,8 +93,8 @@ async def gyroStraightRotations(robot: Robot, launchSettings: LaunchSettings, ro
     robot.rightDrive.hold()
 
 async def gyroStraightTime(robot: Robot, launchSettings: LaunchSettings, seconds: float, targetHeading: float = 0, targetPower: float = 60, accelDist: float = 0, deaccelDist: float = 0, targetTolerance:float = 0):
-    robot.leftDrive.reset_angle(0);
-    robot.rightDrive.reset_angle(0);
+    robot.leftDrive.reset_angle(0)
+    robot.rightDrive.reset_angle(0)
     timer = StopWatch()
 
     kp = launchSettings.kp
@@ -195,7 +195,7 @@ async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, directi
     robot.rightDrive.hold()
 
 
-async def gyroPivot(robot: Robot, direction: float, targetHeading:float, maxSpeed: float = 2400, minSpeed: float = 70):
+'''async def gyroPivot(robot: Robot, direction: float, targetHeading:float, maxSpeed: float = 2400, minSpeed: float = 70):
     turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
     turnRot = turnDegrees / 360
 
@@ -237,8 +237,9 @@ async def gyroPivot(robot: Robot, direction: float, targetHeading:float, maxSpee
 
     finalError = abs(robot.hub.imu.heading() - targetHeading)
     print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
+'''
 
-async def gyroPivotFS(robot: Robot, direction: float, targetHeading: float, maxSpeed: float = 2400, minSpeed: float = 70, timeout_ms: float = 3000):
+'''async def gyroPivotFS(robot: Robot, direction: float, targetHeading: float, maxSpeed: float = 2400, minSpeed: float = 70, timeout_ms: float = 3000):
     turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
     turnRot = turnDegrees / 360
 
@@ -290,10 +291,9 @@ async def gyroPivotFS(robot: Robot, direction: float, targetHeading: float, maxS
     else:
         print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
         return False
+'''
 
-
-
-async def gyroSpin(robot: Robot, targetHeading: float, maxSpeed: float = 1200, minSpeed: float = 35):
+'''async def gyroSpin(robot: Robot, targetHeading: float, maxSpeed: float = 1200, minSpeed: float = 35):
     turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
     turnRot = turnDegrees / 360
 
@@ -322,8 +322,8 @@ async def gyroSpin(robot: Robot, targetHeading: float, maxSpeed: float = 1200, m
 
     robot.leftDrive.hold()
     robot.rightDrive.hold()
-
-async def archiveSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float):
+'''
+async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float):
     lockGate = False
 
     stopWatch = StopWatch()
@@ -373,7 +373,7 @@ async def archiveSpin(robot: Robot, launchSettings: LaunchSettings, targetHeadin
     robot.leftDrive.hold()
     robot.rightDrive.hold()
 
-async def archivePivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float):
+async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float):
 
     lockGate = False
 
@@ -463,58 +463,6 @@ async def archivePivot(robot: Robot, launchSettings: LaunchSettings, direction: 
             print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
     else:
         print("WARN: GYRO PIVOT DIRECTION INVALID")
-
-
-async def gyroSpinFS(robot: Robot, targetHeading: float, maxSpeed: float = 1200, minSpeed: float = 35):
-    launchFSStraightSettings = LaunchSettings(kp = 4, ki = 0, kd = 0.09)
-    turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
-    turnRot = turnDegrees / 360
-
-    if (robot.hub.imu.heading() < targetHeading):
-        exit = 0
-        pd = robot.hub.imu.heading()
-        while robot.hub.imu.heading() < targetHeading and exit == 0:
-            pd = robot.hub.imu.heading()
-            currentSpeed = maxSpeed * abs(robot.hub.imu.heading() - targetHeading) / turnDegrees * turnRot
-
-            if(currentSpeed < minSpeed):
-                currentSpeed = minSpeed
-            
-            robot.leftDrive.run(currentSpeed)
-            robot.rightDrive.run(-currentSpeed)
-
-            if(pd == robot.hub.imu.heading()):
-                print("Failed Spining")
-                exit = 1
-                cdg = pd - 10
-
-            await wait(10)
-        
-        if(exit == 1):
-            print("Failed Spining. Initiating corection")
-            await wait(2000)
-            gyroSpin(robot, cdg)
-            await wait(2000)
-            gyroStraightRotations(robot, launchFSStraightSettings, 0.15, cdg, -30)
-            await wait(2000)
-            gyroSpin(robot, targetHeading)
-            await wait(2000)
-
-    else:
-        while robot.hub.imu.heading() > targetHeading:
-            currentSpeed = maxSpeed * abs(robot.hub.imu.heading() - targetHeading) / turnDegrees * turnRot
-
-            if(currentSpeed < minSpeed):
-                currentSpeed = minSpeed
-            
-            robot.leftDrive.run(-currentSpeed)
-            robot.rightDrive.run(currentSpeed)
-
-            await wait(10)
-
-    robot.leftDrive.hold()
-    robot.rightDrive.hold()
-
 
 async def play_song(robot: Robot, volume: int = 40):
     robot.hub.speaker.volume(volume)
