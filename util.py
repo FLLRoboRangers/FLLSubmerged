@@ -195,6 +195,158 @@ async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, directi
     robot.rightDrive.hold()
 
 
+async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1, minSpeed: float = 10):
+    lockGate = False
+
+    stopWatch = StopWatch()
+    safetyWatch = StopWatch()
+
+    targetTolerance = turnTolerance
+
+    kp = launchSettings.kp
+    ki = launchSettings.ki
+    kd = launchSettings.kd
+    safetyThreshold = launchSettings.safetyThreshold
+
+    controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
+
+    currentHeading = robot.hub.imu.heading()
+    currentError = abs(targetHeading - currentHeading)
+
+    print("Starting gyro spin")
+    while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
+        currentHeading = robot.hub.imu.heading()
+        currentError = abs(targetHeading - currentHeading)
+
+        turnRate = controller.calculate(currentHeading)
+
+        if(abs(turnRate) < minSpeed):
+            turnRate = minSpeed
+
+        robot.leftDrive.run(turnRate)
+        robot.rightDrive.run(-turnRate)
+
+        if currentError < targetTolerance and lockGate == False: 
+            stopWatch.reset()
+            stopWatch.resume()
+            lockGate = True
+        elif currentError > targetTolerance: 
+            stopWatch.pause()
+            lockGate = False
+
+        if safetyWatch.time() > safetyThreshold:
+            break
+        
+        await wait(10)
+
+    finalError = abs(robot.hub.imu.heading() - targetHeading)
+    if safetyWatch.time() > safetyThreshold:
+        print(f"Gyro spin took more than {safetyThreshold}ms, finished with {finalError} degrees error, moving on")
+    else:
+        print(f"Gyro spin took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
+
+    robot.leftDrive.hold()
+    robot.rightDrive.hold()
+
+async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, turnTolerance: float = 1, minSpeed: float = 10):
+
+    lockGate = False
+
+    stopWatch = StopWatch()
+    safetyWatch = StopWatch()
+
+    targetTolerance = turnTolerance
+
+    kp = launchSettings.kp * 2
+    ki = launchSettings.ki * 2
+    kd = launchSettings.kd * 2
+    safetyThreshold = launchSettings.safetyThreshold
+
+    controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
+
+    currentHeading = robot.hub.imu.heading()
+    startingHeading = currentHeading
+    currentError = abs(targetHeading - currentHeading)
+
+    print("Starting gyro pivot")
+
+    #0 front
+    if direction == 0:
+        while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
+            currentHeading = robot.hub.imu.heading()
+            currentError = abs(targetHeading - currentHeading)
+
+            turnRate = controller.calculate(currentHeading)
+
+            if(targetHeading < startingHeading):
+                if(abs(turnRate) < minSpeed):
+                    turnRate = minSpeed
+                robot.rightDrive.run(-turnRate)
+            else:
+                if(abs(turnRate) < minSpeed):
+                    turnRate = minSpeed
+                robot.leftDrive.run(turnRate)
+
+            if currentError < targetTolerance and lockGate == False: 
+                stopWatch.reset()
+                stopWatch.resume()
+                lockGate = True
+            elif currentError > targetTolerance: 
+                stopWatch.pause()
+                lockGate = False
+
+            if safetyWatch.time() > safetyThreshold:
+                break
+            await wait(10)
+
+        finalError = abs(robot.hub.imu.heading() - targetHeading)
+        if safetyWatch.time() > safetyThreshold:
+            print(f"Gyro pivot took more than {safetyThreshold}ms, finished with {finalError} degrees error, moving on")
+        else:
+            print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
+
+        robot.leftDrive.hold()
+        robot.rightDrive.hold()
+    #1 back
+    elif direction == 1:
+        while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
+            currentHeading = robot.hub.imu.heading()
+            currentError = abs(targetHeading - currentHeading)
+
+            turnRate = controller.calculate(currentHeading)
+
+            if(targetHeading > startingHeading):
+                if(abs(turnRate) < minSpeed):
+                    turnRate = minSpeed
+                robot.rightDrive.run(-turnRate)
+            else:
+                if(abs(turnRate) < minSpeed):
+                    turnRate = minSpeed
+                robot.leftDrive.run(turnRate)
+
+            if currentError < targetTolerance and lockGate == False: 
+                stopWatch.reset()
+                stopWatch.resume()
+                lockGate = True
+            elif currentError > targetTolerance: 
+                stopWatch.pause()
+                lockGate = False
+
+            if safetyWatch.time() > safetyThreshold:
+                break
+            await wait(10)
+
+        robot.leftDrive.hold()
+        robot.rightDrive.hold()
+
+        finalError = abs(robot.hub.imu.heading() - targetHeading)
+        if safetyWatch.time() > safetyThreshold:
+            print(f"Gyro pivot took more than {safetyThreshold}ms, finished with {finalError} degrees error - moving on")
+        else:
+            print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
+    else:
+        print("WARN: GYRO PIVOT DIRECTION INVALID")
+
 '''async def gyroPivot(robot: Robot, direction: float, targetHeading:float, maxSpeed: float = 2400, minSpeed: float = 70):
     turnDegrees = abs(robot.hub.imu.heading() - targetHeading)
     turnRot = turnDegrees / 360
@@ -323,146 +475,6 @@ async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, directi
     robot.leftDrive.hold()
     robot.rightDrive.hold()
 '''
-async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1):
-    lockGate = False
-
-    stopWatch = StopWatch()
-    safetyWatch = StopWatch()
-
-    targetTolerance = turnTolerance
-
-    kp = launchSettings.kp
-    ki = launchSettings.ki
-    kd = launchSettings.kd
-    safetyThreshold = launchSettings.safetyThreshold
-
-    controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
-
-    currentHeading = robot.hub.imu.heading()
-    currentError = abs(targetHeading - currentHeading)
-
-    print("Starting gyro spin")
-    while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
-        currentHeading = robot.hub.imu.heading()
-        currentError = abs(targetHeading - currentHeading)
-
-        turnRate = controller.calculate(currentHeading)
-
-        robot.leftDrive.run(turnRate)
-        robot.rightDrive.run(-turnRate)
-
-        if currentError < targetTolerance and lockGate == False: 
-            stopWatch.reset()
-            stopWatch.resume()
-            lockGate = True
-        elif currentError > targetTolerance: 
-            stopWatch.pause()
-            lockGate = False
-
-        if safetyWatch.time() > safetyThreshold:
-            break
-        
-        await wait(10)
-
-    finalError = abs(robot.hub.imu.heading() - targetHeading)
-    if safetyWatch.time() > safetyThreshold:
-        print(f"Gyro spin took more than {safetyThreshold}ms, finished with {finalError} degrees error, moving on")
-    else:
-        print(f"Gyro spin took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
-
-    robot.leftDrive.hold()
-    robot.rightDrive.hold()
-
-async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, turnTolerance: float = 1):
-
-    lockGate = False
-
-    stopWatch = StopWatch()
-    safetyWatch = StopWatch()
-
-    targetTolerance = turnTolerance
-
-    kp = launchSettings.kp * 2
-    ki = launchSettings.ki * 2
-    kd = launchSettings.kd * 2
-    safetyThreshold = launchSettings.safetyThreshold
-
-    controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
-
-    currentHeading = robot.hub.imu.heading()
-    startingHeading = currentHeading
-    currentError = abs(targetHeading - currentHeading)
-
-    print("Starting gyro pivot")
-
-    #0 front
-    if direction == 0:
-        while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
-            currentHeading = robot.hub.imu.heading()
-            currentError = abs(targetHeading - currentHeading)
-
-            turnRate = controller.calculate(currentHeading)
-
-            if(targetHeading < startingHeading):
-                robot.rightDrive.run(-turnRate)
-            else:
-                robot.leftDrive.run(turnRate)
-
-            if currentError < targetTolerance and lockGate == False: 
-                stopWatch.reset()
-                stopWatch.resume()
-                lockGate = True
-            elif currentError > targetTolerance: 
-                stopWatch.pause()
-                lockGate = False
-
-            if safetyWatch.time() > safetyThreshold:
-                break
-            await wait(10)
-
-        finalError = abs(robot.hub.imu.heading() - targetHeading)
-        if safetyWatch.time() > safetyThreshold:
-            print(f"Gyro pivot took more than {safetyThreshold}ms, finished with {finalError} degrees error, moving on")
-        else:
-            print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
-
-        robot.leftDrive.hold()
-        robot.rightDrive.hold()
-    #1 back
-    elif direction == 1:
-        while currentError > targetTolerance or (currentError < targetTolerance and stopWatch.time() < 500):
-            currentHeading = robot.hub.imu.heading()
-            currentError = abs(targetHeading - currentHeading)
-
-            turnRate = controller.calculate(currentHeading)
-
-            if(targetHeading > startingHeading):
-                robot.rightDrive.run(-turnRate)
-            else:
-                robot.leftDrive.run(turnRate)
-
-            if currentError < targetTolerance and lockGate == False: 
-                stopWatch.reset()
-                stopWatch.resume()
-                lockGate = True
-            elif currentError > targetTolerance: 
-                stopWatch.pause()
-                lockGate = False
-
-            if safetyWatch.time() > safetyThreshold:
-                break
-            await wait(10)
-
-        robot.leftDrive.hold()
-        robot.rightDrive.hold()
-
-        finalError = abs(robot.hub.imu.heading() - targetHeading)
-        if safetyWatch.time() > safetyThreshold:
-            print(f"Gyro pivot took more than {safetyThreshold}ms, finished with {finalError} degrees error moving on")
-        else:
-            print(f"Gyro pivot took {safetyWatch.time()}ms to complete, finished with {finalError} degrees error")
-    else:
-        print("WARN: GYRO PIVOT DIRECTION INVALID")
 
 async def play_song(robot: Robot, volume: int = 40):
     robot.hub.speaker.volume(volume)
