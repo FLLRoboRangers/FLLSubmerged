@@ -53,12 +53,13 @@ class PIDController:
         return correction
 
 class LaunchSettings:
-    def __init__(self, kp: float, ki: float, kd: float, safetyThreshold: float = 3500, turnTolerance: float = 0.5):
+    def __init__(self, kp: float, ki: float, kd: float, safetyThreshold: float = 3500, turnTolerance: float = 0.5, minSpeed: float = 10):
         self.kp = kp
         self.ki = ki
         self.kd = kd
         self.safetyThreshold = safetyThreshold
         self.turnTolerance = turnTolerance
+        self.minSpeed = minSpeed
 
 async def gyroStraightRotations(robot: Robot, launchSettings: LaunchSettings, rotations: float, targetHeading: float = 0, targetPower: float = 60, accelDist: float = 0, deaccelDist: float = 0, targetTolerance:float = 0):
     robot.leftDrive.reset_angle(0)
@@ -195,7 +196,7 @@ async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, directi
     robot.rightDrive.hold()
 
 
-async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1, minSpeed: float = 10):
+async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1):
     lockGate = False
 
     stopWatch = StopWatch()
@@ -207,6 +208,7 @@ async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: 
     ki = launchSettings.ki
     kd = launchSettings.kd
     safetyThreshold = launchSettings.safetyThreshold
+    minSpeed = launchSettings.minSpeed
 
     controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
 
@@ -220,8 +222,10 @@ async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: 
 
         turnRate = controller.calculate(currentHeading)
 
-        if(abs(turnRate) < minSpeed):
+        if(abs(turnRate) < minSpeed and turnRate > 0):
             turnRate = minSpeed
+        elif (abs(turnRate) < minSpeed and turnRate < 0):
+            turnRate = -minSpeed
 
         robot.leftDrive.run(turnRate)
         robot.rightDrive.run(-turnRate)
@@ -248,7 +252,7 @@ async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: 
     robot.leftDrive.hold()
     robot.rightDrive.hold()
 
-async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, turnTolerance: float = 1, minSpeed: float = 10):
+async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, turnTolerance: float = 1):
 
     lockGate = False
 
@@ -261,6 +265,7 @@ async def gyroPivot(robot: Robot, launchSettings: LaunchSettings, direction: flo
     ki = launchSettings.ki * 2
     kd = launchSettings.kd * 2
     safetyThreshold = launchSettings.safetyThreshold
+    minSpeed = launchSettings.minSpeed
 
     controller = PIDController(targetHeading, targetTolerance, kp, ki, kd)
 

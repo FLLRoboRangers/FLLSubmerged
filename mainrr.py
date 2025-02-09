@@ -17,13 +17,12 @@ leftAttachment = Motor(Port.C)
 rightAttachment = Motor(Port.E)
 
 driveBase = DriveBase(leftDrive, rightDrive, 62.4, 81.4)
-
 colorLeft = ColorSensor(Port.B)
 colorRight = ColorSensor(Port.F)
 
 robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, driveBase, colorLeft, colorRight)
 
-exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, sampleExit8, leftMotorControl, rightMotorControl]
+exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, sampleExit8, sampleExit9, leftMotorControl, rightMotorControl]
 
 async def main():
     selectedProgram = programSelect(1)
