@@ -22,7 +22,7 @@ colorRight = ColorSensor(Port.F)
 
 robot = Robot(hub, leftDrive, rightDrive, leftAttachment, rightAttachment, driveBase, colorLeft, colorRight)
 
-exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, sampleExit8, sampleExit9, leftMotorControl, rightMotorControl]
+exits = [exit1, exit2, sampleExit3, sampleExit4, sampleExit5, sampleExit6,sampleExit7, sampleExit8, sampleExit9, leftMotorControl, rightMotorControl, gyroTest]
 
 async def main():
     selectedProgram = programSelect(1)

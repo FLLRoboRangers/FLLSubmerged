@@ -111,9 +111,9 @@ async def sampleExit3(robot: Robot):
     exitTimer = StopWatch()
 
 
-    await gyroStraightTime(robot, launch3StraightSetings , 0.8 , 1 , -100)
-    await robot.leftAttachment.run_time(-700, 500)
-    await gyroStraightTime(robot , launch3StraightSetings , 0.6 , 0 , 100)
+    await gyroStraightTime(robot, launch3StraightSetings , 0.7 , 1 , -100)
+    await wait(150)
+    await gyroStraightTime(robot , launch3StraightSetings , 0.8 , 0 , 100)
     return exitTimer.time()
 
 
@@ -212,7 +212,7 @@ async def sampleExit5(robot: Robot):
 async def sampleExit6(robot: Robot):
     launch6StraightSettings = LaunchSettings(kp = 4, ki = 0, kd = 0.09)
     launch6TurnSettings = LaunchSettings(kp = 8, ki = 3.3, kd = 0.9, safetyThreshold = 1200, minSpeed=30)
-    launch6TurnSettings2 = LaunchSettings(kp = 6, ki = 3, kd = 0.8, safetyThreshold = 1200, minSpeed=40)
+    launch6TurnSettings2 = LaunchSettings(kp = 6, ki = 3, kd = 0.8, safetyThreshold = 1500, minSpeed=45)
 
 
 
@@ -225,12 +225,15 @@ async def sampleExit6(robot: Robot):
     robot.leftAttachment.run_time(-800, 1300, wait=False)
     robot.rightAttachment.dc(30)
 
-    await gyroStraightRotations(robot, launch6StraightSettings, 3.65, 0, 80)
-    await gyroSpin(robot, launch6TurnSettings, -25)
-    await gyroStraightRotations(robot, launch6StraightSettings, 0.7, -25, 60)
-    await gyroPivot(robot, launch6TurnSettings2, front, 0)
+    # await gyroStraightRotations(robot, launch6StraightSettings, 3.65, 0, 80)
+    # await gyroSpin(robot, launch6TurnSettings, -25)
+    # await gyroStraightRotations(robot, launch6StraightSettings, 0.7, -25, 60)
 
-    await gyroStraightTime(robot, launch6StraightSettings, 1.1, 0, 80)
+    await gyroStraightRotations(robot, launch6StraightSettings, 4.4, -10, 80)
+    await gyroStraightTime(robot, launch6StraightSettings, 1.2, -10, 80)
+
+    await gyroPivot(robot, launch6TurnSettings2, front, 0, 1)
+
     robot.rightAttachment.stop()
     await robot.leftAttachment.run_time(1000, 1200)
     await gyroStraightRotations(robot, launch6StraightSettings, 1.65, 0, -60)
@@ -239,11 +242,15 @@ async def sampleExit6(robot: Robot):
     await gyroStraightRotations(robot, launch6StraightSettings, 1, 45, 70)
     await gyroStraightTime(robot, launch6StraightSettings, 0.8, 45, 70)
     await wait(500)
-    await gyroStraightRotations(robot, launch6StraightSettings, 1, 45, -70)
-    await gyroSpin(robot, launch6TurnSettings, 0, 2)
-    await gyroStraightRotations(robot, launch6StraightSettings, 1.7, 0, -100)
-    await gyroSpin(robot, launch6TurnSettings, -45, 4)
-    await gyroStraightRotations(robot, launch6StraightSettings, 2.5, -45, -100)
+
+    # await gyroStraightRotations(robot, launch6StraightSettings, 1, 45, -70)
+    # await gyroSpin(robot, launch6TurnSettings, 0, 2)
+    # await gyroStraightRotations(robot, launch6StraightSettings, 1.7, 0, -100)
+    # await gyroSpin(robot, launch6TurnSettings, -45, 4)
+    # await gyroStraightRotations(robot, launch6StraightSettings, 2.5, -45, -100)
+
+    robot.leftDrive.run_time(-1000 , 2500 , wait=False)
+    await robot.rightDrive.run_time(-785 , 2500)
 
     return exitTimer.time()
     
@@ -351,3 +358,11 @@ async def rightMotorControl(robot: Robot):
             robot.rightAttachment.stop()
         await wait(10)
     
+
+async def gyroTest(robot: Robot):
+
+    await resetGyro(robot)
+
+    while True:
+        robot.hub.display.number(abs(robot.hub.imu.heading()))
+        await wait(10)
