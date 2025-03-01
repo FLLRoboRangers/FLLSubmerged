@@ -66,12 +66,24 @@ async def programQuit():
                                                                                                                                                                                                                                                     
     return 1
 
+def hubdisplay(programIndex):
+    if(programIndex <= 9):
+        hub.display.number(programIndex)
+    else:
+        if(programIndex == 10): 
+            hub.display.char("L")
+        if(programIndex == 11): 
+            hub.display.char("R")
+        if(programIndex == 12): 
+            hub.display.char("G")
+
+
 def programSelect(programIndex, selectingProgram = True):
     robot.hub.light.blink(Color.BLUE, [250, 250])
     rightButtonPressed = False
     leftButtonPressed = False
     middleButtonPressed = False
-    hub.display.number(programIndex)
+    hubdisplay(programIndex)
     while selectingProgram:
         if Button.RIGHT in hub.buttons.pressed():
             rightButtonPressed = True
@@ -86,14 +98,14 @@ def programSelect(programIndex, selectingProgram = True):
             programIndex += 1
             if programIndex > len(exits):
                 programIndex = 1
-            hub.display.number(programIndex)
+            hubdisplay(programIndex)
             rightButtonPressed = False
             
         if (Button.LEFT not in hub.buttons.pressed()) and leftButtonPressed == True:
             programIndex -= 1
             if programIndex < 1:
                 programIndex = len(exits)
-            hub.display.number(programIndex)
+            hubdisplay(programIndex)
             leftButtonPressed = False
 
         if (Button.CENTER not in hub.buttons.pressed()) and middleButtonPressed == True:

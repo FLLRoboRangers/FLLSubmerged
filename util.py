@@ -157,44 +157,47 @@ async def waitForStart(robot: Robot):
     robot.hub.light.on(Color.VIOLET)
     print("Exit has started")
 
-async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, targetTolerance: float, speed: float = 1000):
+
+
+async def alignToStructure(robot: Robot, launchSettings: LaunchSettings, direction: float, targetHeading: float, targetTolerance: float, speed: float = 1000, safetyThreshold: float = 2000):
     stopWatch = StopWatch()
-    error = abs(robot.hub.imu.heading() - targetHeading)
     
-    if(abs(robot.hub.imu.heading()) < abs(targetHeading) - targetTolerance):
-        while(error > 1):
+    error = abs(robot.hub.imu.heading() - targetHeading)
+
+    if robot.hub.imu.heading() < targetHeading - targetTolerance:
+        while error > 1 and stopWatch.time() < safetyThreshold:  # Timeout to prevent infinite loop
             error = abs(robot.hub.imu.heading() - targetHeading)
-            robot.leftDrive.run(speed)
-            robot.rightDrive.run(-speed)
+            speedFactor = max(0.3, error / 20)  # Reduce speed as it gets closer
+            robot.leftDrive.run(speed * speedFactor)
+            robot.rightDrive.run(-speed * speedFactor)
         robot.leftDrive.hold()
         robot.rightDrive.hold()
-        if(direction == 0):
+
+        if direction == 0:
             await gyroStraightTime(robot, launchSettings, 1, targetHeading, 60)
-        elif(direction == 1):
+        elif direction == 1:
             await gyroStraightTime(robot, launchSettings, 1, targetHeading, -60)
 
         return 1
 
-    elif(abs(robot.hub.imu.heading()) > abs(targetHeading) + targetTolerance):
-        while(error > 1):
+    elif robot.hub.imu.heading() > targetHeading + targetTolerance:
+        while error > 1 and stopWatch.time() < safetyThreshold:
             error = abs(robot.hub.imu.heading() - targetHeading)
-            robot.leftDrive.run(-speed)
-            robot.rightDrive.run(speed)
+            speedFactor = max(0.3, error / 20)
+            robot.leftDrive.run(-speed * speedFactor)
+            robot.rightDrive.run(speed * speedFactor)
         robot.leftDrive.hold()
         robot.rightDrive.hold()
-        if(direction == 0):
+
+        if direction == 0:
             await gyroStraightTime(robot, launchSettings, 1, targetHeading, 60)
-        elif(direction == 1):
+        elif direction == 1:
             await gyroStraightTime(robot, launchSettings, 1, targetHeading, -60)
 
         return 1
+
     else:
         return 0
-        pass
-
-    robot.leftDrive.hold()
-    robot.rightDrive.hold()
-
 
 async def gyroSpin(robot: Robot, launchSettings: LaunchSettings, targetHeading: float, turnTolerance: float = 1):
     lockGate = False
@@ -506,3 +509,6 @@ async def play_song(robot: Robot, volume: int = 40):
     ]
     while(True):
         robot.hub.speaker.play_notes(crab_rave_notes, 125)
+        await wait(10)
+
+
