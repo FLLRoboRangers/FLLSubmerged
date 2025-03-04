@@ -25,8 +25,10 @@ async def exit1(robot: Robot):
 
     exitTimer = StopWatch()
 
-    await gyroStraightRotations(robot, launch1StraightSettings, 1.8, 0, 50)
-    await gyroStraightTime(robot, launch1StraightSettings, 0.7, 1, 70)
+    robot.rightAttachment.dc(30)
+
+    await gyroStraightRotations(robot, launch1StraightSettings, 1.8, 0, 70)
+    await gyroStraightTime(robot, launch1StraightSettings, 0.5, 1, 90)
 
 
     while(robot.hub.imu.heading() < 0):
@@ -36,18 +38,17 @@ async def exit1(robot: Robot):
     robot.rightDrive.dc(0)
 
     
-    await robot.leftAttachment.run_time(1000 , 1200)
-
-    robot.leftAttachment.run_time(-700, 1200)
-
+    robot.leftAttachment.run_time(1000 , 1200, wait=False)
     await wait(600)
+    robot.rightAttachment.run_time(-300, 1400, wait=False)
+    await wait(900)
 
-    robot.rightAttachment.run_time(-850, 1200)
+    robot.leftAttachment.run_time(-900, 1100)
 
     await wait(600)
 
     await gyroStraightTime(robot, launch1StraightSettings, 0.7, 0, -80)
-    await gyroStraightTime(robot, launch1StraightSettings, 1.5, 30, -80)
+    await gyroStraightTime(robot, launch1StraightSettings, 1.2, 30, -90)
 
 
     return exitTimer.time()
