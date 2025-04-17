@@ -350,7 +350,7 @@ async def sampleExit11(robot: Robot): #last exit
     robot.leftDrive.dc(-40)
     robot.rightDrive.dc(-40)
     await robot.rightAttachment.run_time(-1000, 700)
-    await wait(800)
+    await wait(1300)
     robot.leftDrive.dc(0)
     robot.rightDrive.dc(0)
     await gyroStraightTime(robot, launch11StraightSetings , 0.1 , -135 , 80)
